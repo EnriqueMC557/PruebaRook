@@ -17,6 +17,7 @@ class RookDataBase:
 	
 	def close(self):
 		self.connection.close()		
+		print('Conexión terminada')
 	
 	def insertTemperature(self):
 		self.localTime()

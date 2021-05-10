@@ -45,6 +45,9 @@ class gui(QWidget):
         self.figure.ax.legend(['Temperatura', 'Carga CPU'])
         self.figure.ax.grid(True)
         self.figure.draw()
+        
+    def closeEvent(self, event):
+        self.BDD.close()
 
 if __name__ == '__main__':
     # crea la instancia de la aplicación
