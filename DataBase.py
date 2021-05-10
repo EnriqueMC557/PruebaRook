@@ -31,13 +31,13 @@ class RookDataBase:
 			host = 'localhost',
 			user = 'emc',
 			password = '12345678',
-			db = 'RookDB'
+			db = 'RookBDD'
 			)
 		self.cursor = self.connection.cursor()
 		print('Conexión exitosa')
 	
 	def close(self):
-		self.connection.close()
+		self.connection.close()		
 	
 	def insertTemperature(self):
 		sql = f"""INSERT INTO data (timestamp, variable_name, value)
@@ -64,7 +64,7 @@ class RookDataBase:
 		except Exception as e:
 			raise
 
-if __name__ == __main__:
+if __name__ == '__main__':
 	db = RookDataBase()
 	db.insertTemperature()
 	db.insertCPUload()
