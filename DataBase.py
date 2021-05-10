@@ -35,14 +35,19 @@ class RookDataBase:
 		self.connection.commit()
 		
 	def select_all(self):
-		sql = "SELECT * FROM data"
+		self.localTime()
+		sql_1 = f"""SELECT value FROM data WHERE
+				variable_name = 'temperature' AND
+				timestamp >= DATE_SUB('{self.time}',INTERVAL 8 HOUR)"""
+		sql_2 = f"""SELECT value FROM data WHERE
+				variable_name = 'load' AND
+				timestamp >= DATE_SUB('{self.time}',INTERVAL 8 HOUR)"""		
 		try:
-			self.cursor.execute(sql)
-			data = self.cursor.fetchall()
+			self.cursor.execute(sql_1)
+			self.temperatureValues = self.cursor.fetchall()
 			
-			for dato in data:
-				print(dato)
-				print('----')
+			self.cursor.execute(sql_2)
+			self.loadValues = self.cursor.fetchall()
 				
 		except Exception as e:
 			raise

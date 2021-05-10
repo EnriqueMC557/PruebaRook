@@ -1,5 +1,4 @@
 import sys
-import numpy as np
 from PruebaRook import Ui_Form
 from DataBase import RookDataBase
 from PyQt5.QtWidgets import QApplication, QWidget
@@ -16,7 +15,7 @@ class gui(QWidget):
 
         # Inicializador de QTimer
         self.timer = QTimer()
-        self.timer.start(1000) # Reinicio cada 2 segundos
+        self.timer.start(60000) # Reinicio cada 1 minuto (60 segundos)
 
         # Conexion de señal de Qtimer con slot
         self.timer.timeout.connect(self.cambioHora)
@@ -39,9 +38,12 @@ class gui(QWidget):
         self.ui.LoadText.setText(f'{self.BDD.loadCPU}')
 
     def plotData(self):
+        self.BDD.select_all()
         self.figure.ax.clear()
-        datos = np.random.rand(100)
-        self.figure.ax.plot(datos)
+        self.figure.ax.plot(self.BDD.temperatureValues)
+        self.figure.ax.plot(self.BDD.loadValues)
+        self.figure.ax.legend(['Temperatura', 'Carga CPU'])
+        self.figure.ax.grid(True)
         self.figure.draw()
 
 if __name__ == '__main__':
