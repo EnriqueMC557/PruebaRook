@@ -4,27 +4,6 @@ import time
 import datetime
 import requests
 
-def timeJapon():
-	response = requests.get('http://worldtimeapi.org/api/timezone/Asia/Tokyo')
-	time = response.json()['datetime']
-	time = datetime.datetime.fromisoformat(time).strftime('%Y-%m-%d %H:%M:%S')
-	return time
-
-def localTime():
-	now = time.time()
-	now = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
-	return now
-	
-def temperature():
-	temperatureFile = open('/sys/class/thermal/thermal_zone0/temp')
-	temperature = float(temperatureFile.read())
-	temperatureFile.close()
-	return temperature/1000
-	
-def load():
-	load = psutil.cpu_percent(interval = 1)
-	return load
-
 class RookDataBase:
 	def __init__(self):
 		self.connection = pymysql.connect(
@@ -40,14 +19,18 @@ class RookDataBase:
 		self.connection.close()		
 	
 	def insertTemperature(self):
+		self.localTime()
+		self.temperature()
 		sql = f"""INSERT INTO data (timestamp, variable_name, value)
-			  VALUES ('{timeJapon()}', 'temperature', {temperature()})"""
+			  VALUES ('{self.time}', 'temperature', {self.temp})"""
 		self.cursor.execute(sql)
 		self.connection.commit()
 
 	def insertCPUload(self):
+		self.localTime()
+		self.load()
 		sql = f"""INSERT INTO data (timestamp, variable_name, value)
-			  VALUES ('{timeJapon()}', 'load', {load()})"""
+			  VALUES ('{self.time}', 'load', {self.loadCPU})"""
 		self.cursor.execute(sql)
 		self.connection.commit()
 		
@@ -63,6 +46,27 @@ class RookDataBase:
 				
 		except Exception as e:
 			raise
+	
+	def JapanTime(self):
+		response = requests.get('http://worldtimeapi.org/api/timezone/Asia/Tokyo')
+		time = response.json()['datetime']
+		time = datetime.datetime.fromisoformat(time).strftime('%Y-%m-%d %H:%M:%S')
+		self.time = time
+
+	def localTime(self):
+		now = time.time()
+		now = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
+		self.time = now
+		
+	def temperature(self):
+		temperatureFile = open('/sys/class/thermal/thermal_zone0/temp')
+		temperature = float(temperatureFile.read())
+		temperatureFile.close()
+		self.temp = temperature/1000
+		
+	def load(self):
+		load = psutil.cpu_percent()
+		self.loadCPU = load
 
 if __name__ == '__main__':
 	db = RookDataBase()
