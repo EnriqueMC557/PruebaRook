@@ -1,4 +1,23 @@
 import pymysql
+import psutil
+import time
+from datetime import datetime
+		
+def timestamp():
+	#Revisar formato de timestamp porque marca error de sintaxis
+	now = time.time()
+	now = datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
+	return now
+	
+def temperature():
+	temperatureFile = open('/sys/class/thermal/thermal_zone0/temp')
+	temperature = float(temperatureFile.read())
+	temperatureFile.close()
+	return temperature/1000
+	
+def load():
+	load = psutil.cpu_percent(interval = 1)
+	return load
 
 class RookDataBase:
 	def __init__(self):
@@ -9,26 +28,25 @@ class RookDataBase:
 			db = 'RookDB'
 			)
 		self.cursor = self.connection.cursor()
+		print('Conexión exitosa')
 	
 	def close(self):
 		self.connection.close()
 	
-	def insertTemperature(self, temperature):
-		values = (NOW(), 'temperature', temperature)
-		sql = """INSERT INTO data (timestamp, variable_name, value)
-				 VALUES (?, ?, ?)"""
-		self.cursor.execute(sql, values)
+	def insertTemperature(self):
+		sql = f"""INSERT INTO data (timestamp, variable_name, value)
+				  VALUES (NOW(), 'temperature', {temperature()})"""
+		self.cursor.execute(sql)
 		self.connection.commit()
 
-	def insertCPUload(self, load):
-		values = (NOW(), 'load', load)
-		sql = """INSERT INTO data (timestamp, variable_name, value)
-				 VALUES (?, ?, ?)"""
-		self.cursor.execute(sql, values)
+	def insertCPUload(self):
+		sql = f"""INSERT INTO data (timestamp, variable_name, value)
+				  VALUES (NOW(), 'load', {load()})"""
+		self.cursor.execute(sql)
 		self.connection.commit()
 		
 	def select_all(self):
-		sql = 'SELECT * FROM data'
+		sql = "SELECT * FROM data"
 		try:
 			self.cursor.execute(sql)
 			data = self.cursor.fetchall()
@@ -41,5 +59,6 @@ class RookDataBase:
 			raise
 
 db = RookDataBase()
-db.select_all()
+db.insertTemperature()
+db.insertCPUload()
 db.close()
