@@ -1,12 +1,18 @@
 import pymysql
 import psutil
 import time
-from datetime import datetime
-		
-def timestamp():
-	#Revisar formato de timestamp porque marca error de sintaxis
+import datetime
+import requests
+
+def timeJapon():
+	response = requests.get('http://worldtimeapi.org/api/timezone/Asia/Tokyo')
+	time = response.json()['datetime']
+	time = datetime.datetime.fromisoformat(time).strftime('%Y-%m-%d %H:%M:%S')
+	return time
+
+def localTime():
 	now = time.time()
-	now = datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
+	now = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
 	return now
 	
 def temperature():
@@ -35,13 +41,13 @@ class RookDataBase:
 	
 	def insertTemperature(self):
 		sql = f"""INSERT INTO data (timestamp, variable_name, value)
-				  VALUES (NOW(), 'temperature', {temperature()})"""
+			  VALUES ('{timeJapon()}', 'temperature', {temperature()})"""
 		self.cursor.execute(sql)
 		self.connection.commit()
 
 	def insertCPUload(self):
 		sql = f"""INSERT INTO data (timestamp, variable_name, value)
-				  VALUES (NOW(), 'load', {load()})"""
+			  VALUES ('{timeJapon()}', 'load', {load()})"""
 		self.cursor.execute(sql)
 		self.connection.commit()
 		
@@ -58,7 +64,9 @@ class RookDataBase:
 		except Exception as e:
 			raise
 
-db = RookDataBase()
-db.insertTemperature()
-db.insertCPUload()
-db.close()
+if __name__ == __main__:
+	db = RookDataBase()
+	db.insertTemperature()
+	db.insertCPUload()
+	db.close()
+
