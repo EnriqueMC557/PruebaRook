@@ -44,7 +44,7 @@ class gui(QWidget):
         self.figure.ax.clear()
         self.figure.ax.plot_date(self.BDD.timeValues, self.BDD.temperatureValues, '-')
         self.figure.ax.plot_date(self.BDD.timeValues, self.BDD.loadValues, '-')
-        self.figure.ax.tick_params('x', labelrotation = 5, labelsize = 8)
+        self.figure.ax.tick_params('x', labelrotation = 10, labelsize = 8)
         self.figure.ax.legend(['Temperatura (°C)', 'Carga CPU (%)'])
         self.figure.ax.set_xlabel('Marca de tiempo (YYYY-MM-DD HH:MM:SS)')
         self.figure.ax.set_ylabel('Valor')

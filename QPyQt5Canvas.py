@@ -12,8 +12,6 @@ Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
 from PyQt5.QtWidgets import QWidget, QVBoxLayout
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-import numpy as np
-
 
 class PyQt5Canvas(FigureCanvasQTAgg):
     """
@@ -29,7 +27,6 @@ class PyQt5Canvas(FigureCanvasQTAgg):
         self.ax = self.fig.add_axes([0.1, 0.1, 0.8, 0.8])
         # invoca al constructor de la clase
         FigureCanvasQTAgg.__init__(self, self.fig)
-
 
 class QPyQt5Canvas(QWidget):
     """

@@ -10,13 +10,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from QPyQt5Canvas import QPyQt5Canvas
 
-
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(627, 457)
+        Form.resize(627, 535)
         self.horizontalLayoutWidget = QtWidgets.QWidget(Form)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(40, 370, 561, 41))
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(40, 450, 561, 41))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
@@ -50,10 +49,10 @@ class Ui_Form(object):
         self.LoadText.setObjectName("LoadText")
         self.horizontalLayout.addWidget(self.LoadText)
         self.PlotButton = QtWidgets.QPushButton(Form)
-        self.PlotButton.setGeometry(QtCore.QRect(250, 420, 121, 25))
+        self.PlotButton.setGeometry(QtCore.QRect(250, 500, 121, 25))
         self.PlotButton.setObjectName("PlotButton")
         self.PlotCanvas = QPyQt5Canvas(Form)
-        self.PlotCanvas.setGeometry(QtCore.QRect(40, 20, 561, 331))
+        self.PlotCanvas.setGeometry(QtCore.QRect(40, -40, 561, 500))
         self.PlotCanvas.setObjectName("PlotCanvas")
 
         self.retranslateUi(Form)
@@ -65,12 +64,10 @@ class Ui_Form(object):
         self.TimeLabel.setText(_translate("Form", "Hora actual:"))
         self.TimeText.setText(_translate("Form", "HH:MM:SS"))
         self.TemperatureLabel.setText(_translate("Form", "Temperatura del sistema"))
-        self.TemperatureText.setText(_translate("Form", "AA.DDD"))
+        self.TemperatureText.setText(_translate("Form", "UU.DDD"))
         self.LoadLabel.setText(_translate("Form", "Carga de CPU"))
-        self.LoadText.setText(_translate("Form", "DD"))
+        self.LoadText.setText(_translate("Form", "UU.D"))
         self.PlotButton.setText(_translate("Form", "Graficar datos"))
-
-
 
 if __name__ == "__main__":
     import sys
