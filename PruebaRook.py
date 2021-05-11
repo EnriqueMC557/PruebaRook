@@ -16,7 +16,7 @@ class Ui_Form(object):
         Form.setObjectName("Form")
         Form.resize(627, 457)
         self.horizontalLayoutWidget = QtWidgets.QWidget(Form)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(40, 320, 561, 80))
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(40, 370, 561, 41))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
@@ -53,7 +53,7 @@ class Ui_Form(object):
         self.PlotButton.setGeometry(QtCore.QRect(250, 420, 121, 25))
         self.PlotButton.setObjectName("PlotButton")
         self.PlotCanvas = QPyQt5Canvas(Form)
-        self.PlotCanvas.setGeometry(QtCore.QRect(40, 20, 561, 281))
+        self.PlotCanvas.setGeometry(QtCore.QRect(40, 20, 561, 331))
         self.PlotCanvas.setObjectName("PlotCanvas")
 
         self.retranslateUi(Form)

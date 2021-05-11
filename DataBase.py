@@ -51,13 +51,20 @@ class RookDataBase:
 				timestamp >= DATE_SUB('{self.time}',INTERVAL 8 HOUR)"""
 		sql_2 = f"""SELECT value FROM data WHERE
 				variable_name = 'load' AND
-				timestamp >= DATE_SUB('{self.time}',INTERVAL 8 HOUR)"""		
+				timestamp >= DATE_SUB('{self.time}',INTERVAL 8 HOUR)"""	
+		sql_3 = f"""SELECT timestamp FROM data WHERE
+				variable_name = 'temperature' AND
+				timestamp >= DATE_SUB('{self.time}',INTERVAL 8 HOUR)"""
 		
 		self.cursor.execute(sql_1)
 		self.temperatureValues = self.cursor.fetchall()
 		
 		self.cursor.execute(sql_2)
 		self.loadValues = self.cursor.fetchall()
+		
+		self.cursor.execute(sql_3)
+		self.timeValues = self.cursor.fetchall()
+		self.timeValues = [time[0] for time in self.timeValues]
 	
 	def JapanTime(self):
 		# Consulta hora en Japón utilizando World Time API
