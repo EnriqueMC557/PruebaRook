@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys
 import time
 from PruebaRook import Ui_Form
@@ -14,17 +15,17 @@ class gui(QWidget):
         self.figure = self.ui.PlotCanvas.canvas
         self.BDD = RookDataBase()
         
-        # Inicialización de thread para temperatura
+        # Inicializacion de thread para temperatura
         self.thread1 = Thread1()
         self.thread1.newTimeTemperature.connect(self.cambioTemperatura)
         self.thread1.start()
         
-        # Inicialización de thread para carga
+        # Inicializacion de thread para carga
         self.thread2 = Thread2()
         self.thread2.newTimeLoad.connect(self.cambioCarga)
         self.thread2.start()
 
-        # Conexion de señal de botón con slot
+        # Conexion de señal de boton con slot
         self.ui.PlotButton.clicked.connect(self.plotData)
 
     def cambioTemperatura(self, time, temperature):
@@ -59,9 +60,9 @@ class gui(QWidget):
         
 
 class Thread1(QThread):
-    # Señal para envío de tiempo y temperatura
+    # Señal para envio de tiempo y temperatura
     newTimeTemperature = pyqtSignal(str, str)
-    # Conexión a BDD
+    # Conexion a BDD
     BDD = RookDataBase()
         
     def run(self):
@@ -70,13 +71,13 @@ class Thread1(QThread):
             time.sleep(60)
             # Consulta e inserta tiempo y temperatura
             self.BDD.insertTemperature()
-            # Envía señal con tiempo y temperatura
+            # Envia señal con tiempo y temperatura
             self.newTimeTemperature.emit(self.BDD.time[11:], str(self.BDD.temp))
 
 class Thread2(QThread):
-    # Señal para envío de tiempo y carga
+    # Señal para envio de tiempo y carga
     newTimeLoad = pyqtSignal(str, str)
-    # Conexión a BDD
+    # Conexion a BDD
     BDD = RookDataBase()
     
     def run(self):
@@ -85,7 +86,7 @@ class Thread2(QThread):
             time.sleep(60)
             # Consulta e inserta tiempo y carga
             self.BDD.insertCPUload()
-            # Envía señal con tiempo y carga
+            # Envia señal con tiempo y carga
             self.newTimeLoad.emit(self.BDD.time[11:], str(self.BDD.loadCPU))
                 
 if __name__ == '__main__':

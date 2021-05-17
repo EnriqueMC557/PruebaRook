@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pymysql
 import psutil
 import time
@@ -6,7 +7,7 @@ import requests
 
 class RookDataBase:
 	def __init__(self):
-		# Inicia conexión con BDD
+		# Inicia conexion con BDD
 		self.connection = pymysql.connect(
 			host = 'localhost',
 			user = 'emc',
@@ -14,17 +15,17 @@ class RookDataBase:
 			db = 'RookBDD'
 			)
 		self.cursor = self.connection.cursor()
-		print('Conexión exitosa')
+		print('Conexion exitosa')
 	
 	def close(self):
-		# Termina conexión con BDD
+		# Termina conexion con BDD
 		self.connection.close()		
-		print('Conexión terminada')
+		print('Conexion terminada')
 	
 	def insertTemperature(self):
 		# Inserta temperatura y timestamp en BDD
 		self.localTime()
-		#self.JapanTime() # Descomentar para utilizar tiempo de Japón 
+		#self.JapanTime() # Descomentar para utilizar tiempo de Japon 
 		self.temperature()
 		sql = f"""INSERT INTO data (timestamp, variable_name, value)
 			  VALUES ('{self.time}', 'temperature', {self.temp})"""
@@ -34,7 +35,7 @@ class RookDataBase:
 	def insertCPUload(self):
 		# Inserta carga de CPU y timestamp en BDD
 		self.localTime()
-		#self.JapanTime() # Descomentar para utilizar tiempo de Japón 
+		#self.JapanTime() # Descomentar para utilizar tiempo de Japon 
 		self.load()
 		sql = f"""INSERT INTO data (timestamp, variable_name, value)
 			  VALUES ('{self.time}', 'load', {self.loadCPU})"""
@@ -44,14 +45,15 @@ class RookDataBase:
 	def select_all(self):
 		# Consulta en BDD los valores de temperatura y carga de CPU
 		self.localTime()
-		#self.JapanTime() # Descomentar para utilizar tiempo de Japón
+		#self.JapanTime() # Descomentar para utilizar tiempo de Japon
+		print(self.time)
 		
 		sql_1 = f"""SELECT value FROM data WHERE
 				variable_name = 'temperature' AND
 				timestamp >= DATE_SUB('{self.time}',INTERVAL 8 HOUR)"""
 		sql_2 = f"""SELECT value FROM data WHERE
 				variable_name = 'load' AND
-				timestamp >= DATE_SUB('{self.time}',INTERVAL 8 HOUR)"""	
+				timestamp >= DATE_SUB('{self.time}',INTERVAL 8 HOUR)"""
 		sql_3 = f"""SELECT timestamp FROM data WHERE
 				variable_name = 'temperature' AND
 				timestamp >= DATE_SUB('{self.time}',INTERVAL 8 HOUR)"""
@@ -67,7 +69,7 @@ class RookDataBase:
 		self.timeValues = [time[0] for time in self.timeValues]
 	
 	def JapanTime(self):
-		# Consulta hora en Japón utilizando World Time API
+		# Consulta hora en Japon utilizando World Time API
 		response = requests.get('http://worldtimeapi.org/api/timezone/Asia/Tokyo')
 		time = response.json()['datetime']
 		time = datetime.datetime.fromisoformat(time).strftime('%Y-%m-%d %H:%M:%S')
