@@ -14,12 +14,12 @@ class gui(QWidget):
         self.ui.setupUi(self)
         self.figure = self.ui.PlotCanvas.canvas
         self.BDD = RookDataBase()
-        
+
         # Inicializacion de thread para temperatura
         self.thread1 = Thread1()
         self.thread1.newTimeTemperature.connect(self.cambioTemperatura)
         self.thread1.start()
-        
+
         # Inicializacion de thread para carga
         self.thread2 = Thread2()
         self.thread2.newTimeLoad.connect(self.cambioCarga)
@@ -43,28 +43,28 @@ class gui(QWidget):
         self.BDD.select_all()
         # Grafica los datos
         self.figure.ax.clear()
-        self.figure.ax.plot_date(self.BDD.timeValues, self.BDD.temperatureValues, '-')
-        self.figure.ax.plot_date(self.BDD.timeValues, self.BDD.loadValues, '-')
+        self.figure.ax.plot_date(self.BDD.timeValues, self.BDD.temperatureValues, '-*')
+        self.figure.ax.plot_date(self.BDD.timeValues, self.BDD.loadValues, '-*')
         self.figure.ax.tick_params('x', labelrotation = 10, labelsize = 8)
         self.figure.ax.legend(['Temperatura (°C)', 'Carga CPU (%)'])
         self.figure.ax.set_xlabel('Marca de tiempo (YYYY-MM-DD HH:MM:SS)')
         self.figure.ax.set_ylabel('Valor')
         self.figure.ax.grid(True)
         self.figure.draw()
-        
+
     def closeEvent(self, event):
         # Termina conexiones con BDD
         self.BDD.close()
         self.thread1.BDD.close()
         self.thread2.BDD.close()
-        
+
 
 class Thread1(QThread):
     # Señal para envio de tiempo y temperatura
     newTimeTemperature = pyqtSignal(str, str)
     # Conexion a BDD
     BDD = RookDataBase()
-        
+
     def run(self):
         while True:
             # Espera 1 minuto (60 segundos)
@@ -79,7 +79,7 @@ class Thread2(QThread):
     newTimeLoad = pyqtSignal(str, str)
     # Conexion a BDD
     BDD = RookDataBase()
-    
+
     def run(self):
         while True:
             # Espera 1 minuto (60 segundos)
@@ -88,7 +88,7 @@ class Thread2(QThread):
             self.BDD.insertCPUload()
             # Envia señal con tiempo y carga
             self.newTimeLoad.emit(self.BDD.time[11:], str(self.BDD.loadCPU))
-                
+
 if __name__ == '__main__':
     # Crea la instancia de la aplicación
     app = QApplication(sys.argv)
