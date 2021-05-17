@@ -14,11 +14,11 @@ class RookDataBase:
 			)
 		self.cursor = self.connection.cursor()
 		print('Conexión exitosa')
-	
+
 	def close(self):
-		self.connection.close()		
+		self.connection.close()
 		print('Conexión terminada')
-	
+
 	def insertTemperature(self):
 		self.localTime()
 		self.temperature()
@@ -34,25 +34,30 @@ class RookDataBase:
 			  VALUES ('{self.time}', 'load', {self.loadCPU})"""
 		self.cursor.execute(sql)
 		self.connection.commit()
-		
+
 	def select_all(self):
 		self.localTime()
+
 		sql_1 = f"""SELECT value FROM data WHERE
 				variable_name = 'temperature' AND
 				timestamp >= DATE_SUB('{self.time}',INTERVAL 8 HOUR)"""
 		sql_2 = f"""SELECT value FROM data WHERE
 				variable_name = 'load' AND
-				timestamp >= DATE_SUB('{self.time}',INTERVAL 8 HOUR)"""		
-		try:
-			self.cursor.execute(sql_1)
-			self.temperatureValues = self.cursor.fetchall()
-			
-			self.cursor.execute(sql_2)
-			self.loadValues = self.cursor.fetchall()
-				
-		except Exception as e:
-			raise
-	
+				timestamp >= DATE_SUB('{self.time}',INTERVAL 8 HOUR)"""
+		sql_3 = f"""SELECT timestamp FROM data WHERE
+				variable_name = 'temperature' AND
+				timestamp >= DATE_SUB('{self.time}',INTERVAL 8 HOUR)"""
+
+		self.cursor.execute(sql_1)
+		self.temperatureValues = self.cursor.fetchall()
+
+		self.cursor.execute(sql_2)
+		self.loadValues = self.cursor.fetchall()
+
+		self.cursor.execute(sql_3)
+		self.timeValues = self.cursor.fetchall()
+		self.timeValues = [time[0] for time in self.timeValues]
+
 	def JapanTime(self):
 		response = requests.get('http://worldtimeapi.org/api/timezone/Asia/Tokyo')
 		time = response.json()['datetime']
@@ -63,13 +68,13 @@ class RookDataBase:
 		now = time.time()
 		now = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H:%M:%S')
 		self.time = now
-		
+
 	def temperature(self):
 		temperatureFile = open('/sys/class/thermal/thermal_zone0/temp')
 		temperature = float(temperatureFile.read())
 		temperatureFile.close()
 		self.temp = temperature/1000
-		
+
 	def load(self):
 		load = psutil.cpu_percent()
 		self.loadCPU = load
@@ -79,4 +84,3 @@ if __name__ == '__main__':
 	db.insertTemperature()
 	db.insertCPUload()
 	db.close()
-
